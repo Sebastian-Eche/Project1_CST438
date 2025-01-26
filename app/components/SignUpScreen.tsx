@@ -1,15 +1,45 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
+import { storage } from '../lib/storage';
 
 export default function SignUpScreen() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSignUp = () => {
-    // Add your sign up logic here
-    router.push('/home');
+  const handleSignUp = async () => {
+    try {
+      if (!username || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+
+      const users = await storage.getUsers();
+      if (users[username]) {
+        alert('Username already exists');
+        return;
+      }
+
+      const newUser = {
+        username,
+        password,
+        score: 0,
+      };
+
+      await storage.saveUser(newUser);
+      await storage.setCurrentUser(newUser);
+      alert('Account created successfully!');
+      router.replace('/home');
+    } catch (error) {
+      console.error('Sign up error:', error);
+      alert('Sign up failed. Please try again.');
+    }
   };
 
   return (
@@ -18,10 +48,9 @@ export default function SignUpScreen() {
       
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
         autoCapitalize="none"
       />
       
@@ -45,8 +74,11 @@ export default function SignUpScreen() {
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.back()}>
-        <Text style={styles.backText}>Back to Login</Text>
+      <TouchableOpacity 
+        style={styles.loginButton} 
+        onPress={() => router.replace('/login')}
+      >
+        <Text style={styles.loginText}>Already have an account? Login</Text>
       </TouchableOpacity>
     </View>
   );
@@ -85,10 +117,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  backText: {
+  loginButton: {
+    marginTop: 20,
+  },
+  loginText: {
     color: '#007AFF',
     textAlign: 'center',
     fontSize: 16,
-    marginTop: 20,
   },
 }); 

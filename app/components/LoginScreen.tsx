@@ -1,34 +1,48 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
+import { storage } from '../lib/storage';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Add your login logic here
-    router.push('/home');
+  const handleLogin = async () => {
+    try {
+      if (!username || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      const users = await storage.getUsers();
+      const user = users[username];
+
+      if (user && user.password === password) {
+        await storage.setCurrentUser(user);
+        alert('Welcome back, ' + username + '!');
+        router.replace('/home');
+      } else {
+        alert('Invalid username or password');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Login failed. Please try again.');
+    }
   };
 
   const handleSignUp = () => {
-    router.push('/signup');
-  };
-
-  const handleSkip = () => {
-    router.push('/home');
+    router.replace('/signup');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome</Text>
+      <Text style={styles.title}>Welcome to Player Quiz</Text>
       
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
         autoCapitalize="none"
       />
       
@@ -46,10 +60,6 @@ export default function LoginScreen() {
 
       <TouchableOpacity style={styles.button} onPress={handleSignUp}>
         <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-        <Text style={styles.skipButtonText}>Skip</Text>
       </TouchableOpacity>
     </View>
   );
@@ -87,13 +97,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
-  },
-  skipButton: {
-    marginTop: 20,
-  },
-  skipButtonText: {
-    color: '#007AFF',
-    textAlign: 'center',
-    fontSize: 16,
   },
 }); 
