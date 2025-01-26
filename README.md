@@ -1,50 +1,58 @@
-# Welcome to your Expo app 👋
+# Welcome to DoYouKnowThePlayer (DYKTP) ⚽️
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Do you think you know your soccer players? Test your knowledge with **DoYouKnowThePlayer**! This exciting app challenges you to identify famous soccer players from around the world. Rack up streaks and show off your soccer expertise!
 
-## Get started
+## Get Started
 
-1. Install dependencies
+1. **Install Dependencies**
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. **Start the App**
 
    ```bash
-    npx expo start
+   npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+   Choose how you want to run the app:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   - [Development build](https://docs.expo.dev/develop/development-builds/introduction/)
+   - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+   - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+   - [Expo Go](https://expo.dev/go)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Gameplay
 
-## Get a fresh project
+- **Identify Players**: Guess the player from the image shown.
+- **Build Streaks**: Answer correctly to build your streak and climb the leaderboard.
+- **Sign Up & Login**: Create an account to save your progress and compete with friends.
 
-When you're ready, run:
+## Get a Fresh Project
+
+When you're ready to start a new project, run:
 
 ```bash
 npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+This will move the starter code to the **app-example** directory and create a blank **app** directory for development.
 
-## Learn more
+## Learn More
 
-To learn more about developing your project with Expo, look at the following resources:
+Explore more about developing with Expo:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- [Expo Documentation](https://docs.expo.dev/): Dive into guides and advanced topics.
+- [Learn Expo Tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial to create a cross-platform app.
 
-## Join the community
+## Join the Community
 
-Join our community of developers creating universal apps.
+Connect with other soccer enthusiasts and developers:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [Expo on GitHub](https://github.com/expo/expo): Contribute to our open-source platform.
+- [Discord Community](https://chat.expo.dev): Chat with other Expo users and ask questions.
+
+---
+
+Get ready to kick off your soccer knowledge journey with **DoYouKnowThePlayer**! 🌟

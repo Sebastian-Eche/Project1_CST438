@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { router } from 'expo-router';
 import { storage } from '../lib/storage';
 
@@ -14,19 +14,17 @@ export default function GameScreen() {
   const [choices, setChoices] = useState<string[]>([]);
   const [score, setScore] = useState(0);
   const [username, setUsername] = useState<string>('');
+  const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
+  const [streakAnimation] = useState(new Animated.Value(1));
 
-  // This is a placeholder. You'll need to implement the actual API call
   const fetchPlayerData = async () => {
     try {
-      // Replace this with your actual API call
-      // For now, using placeholder data
       const player = {
         name: "Lionel Messi",
         image: "https://placeholder-image-url.jpg",
         team: "Inter Miami"
       };
       
-      // Generate random choices including the correct answer
       const playerChoices = [
         player.name,
         "Cristiano Ronaldo",
@@ -36,6 +34,7 @@ export default function GameScreen() {
 
       setCurrentPlayer(player);
       setChoices(playerChoices);
+      setSelectedChoice(null); // Reset selected choice
     } catch (error) {
       console.error('Error fetching player data:', error);
     }
@@ -67,14 +66,32 @@ export default function GameScreen() {
   };
 
   const handleGuess = async (playerName: string) => {
+    setSelectedChoice(playerName);
     if (currentPlayer && playerName === currentPlayer.name) {
       const newScore = score + 1;
       setScore(newScore);
       await updateScore(newScore);
-      fetchPlayerData();
+      animateStreak();
+      setTimeout(fetchPlayerData, 1000); // Delay to show color indication
     } else {
-      alert('Wrong guess! Try again!');
+      setScore(0);
+      setTimeout(fetchPlayerData, 1000); // Delay to show color indication
     }
+  };
+
+  const animateStreak = () => {
+    Animated.sequence([
+      Animated.timing(streakAnimation, {
+        toValue: 1.5,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(streakAnimation, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
   };
 
   const handleSignOut = async () => {
@@ -99,7 +116,11 @@ export default function GameScreen() {
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <Text style={styles.welcomeText}>Welcome, {username}!</Text>
-          <Text style={styles.scoreText}>Score: {score}</Text>
+          {score > 0 && (
+            <Animated.Text style={[styles.streakText, { transform: [{ scale: streakAnimation }] }]}>
+              Streak: {score} 🔥
+            </Animated.Text>
+          )}
         </View>
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
           <Text style={styles.signOutText}>Sign Out</Text>
@@ -120,8 +141,14 @@ export default function GameScreen() {
         {choices.map((choice, index) => (
           <TouchableOpacity
             key={index}
-            style={styles.choiceButton}
+            style={[
+              styles.choiceButton,
+              selectedChoice === choice && {
+                backgroundColor: choice === currentPlayer.name ? 'green' : 'red',
+              },
+            ]}
             onPress={() => handleGuess(choice)}
+            disabled={!!selectedChoice} // Disable buttons after a choice is made
           >
             <Text style={styles.choiceText}>{choice}</Text>
           </TouchableOpacity>
@@ -151,9 +178,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
-  scoreText: {
-    fontSize: 16,
-    color: '#666',
+  streakText: {
+    fontSize: 20,
+    color: '#FF4500',
+    fontWeight: 'bold',
     marginTop: 5,
   },
   imageContainer: {
