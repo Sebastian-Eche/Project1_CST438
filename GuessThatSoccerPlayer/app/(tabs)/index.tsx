@@ -1,29 +1,12 @@
-import { Text, Image, StyleSheet, Platform, View, FlatList} from 'react-native';
+import { Text, Image, StyleSheet, Platform, View, FlatList, Button} from 'react-native';
 import {useState, useEffect} from "react"
 
-// import APIFetch from api;
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-
-// var url = 'https://api-football-v1.p.rapidapi.com/';
-const options = {
-	method: 'GET',
-	headers: {
-		'x-rapidapi-key': '0a7f187b59mshdb359109eaf38fbp19a603jsn02683a0c4a47',
-		'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
-	}
-};
-
-
+import { Audio } from 'expo-av'
 
 var pokemonArray = [];
-var pokemonArrayImage = [] 
 
 export default function HomeScreen() {
-  const [pokemon, setPokemonArray] = useState([]);
+  const [pokemons, setPokemonArray] = useState([]);
   const dataFetch = async () => {
     for(var i = 0; i < 4; i++){
       var randomPokedexNum = Math.floor(Math.random() * 1025) + 1;
@@ -52,18 +35,39 @@ export default function HomeScreen() {
   // }, []);
 
   // console.log()
-  console.log(pokemonArray)
-  console.log(pokemonArray[1])
+  console.log(pokemons[0].cries.latest);
+  // console.log(pokemons[0].name)
+  //
+
+  // SoundPlayer.playUrl("")
+
+  // var audio = `${pokemons[0].cries.latest}`;
+
+  // SoundPlayer.loadUrl(audio);
   
+
+  // console.log(pokemonArray[0].cries.latest)
+  //SoundPlayer.playUrl(`${pokemon.cries.latest}`)
+  const playSound = async (pokemonURL) => {
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: pokemonURL },
+      { shouldPlay: true }
+    )
+  }
+
+
 
   return (
     <View>
-      {pokemonArray.map((pokemon, index) => (
+      <View>
+      </View>
+      {pokemons.map((pokemon, index) => (
         <View> 
           <Text style={{ fontSize: 25, color: "#ffffff"}}>
             {pokemon.name}
           </Text>
-          <Image style={{height: 100, width: 100}}source = {{ uri: pokemon.sprites.front_default }}/>
+          <Button title='PLAY POKEMON CRY' onPress={() => playSound(pokemon.cries.latest)}/> 
+          <Image style={{height: 100, width: 100}} source = {{ uri: pokemon.sprites.front_default }}/>
         </View>
       ))}
     </View>
@@ -114,8 +118,6 @@ export default function HomeScreen() {
     // </ParallaxScrollView>
   );
 }
-
-
 
 
 const styles = StyleSheet.create({
