@@ -33,7 +33,7 @@ export default function HomeScreen() {
   const [pokemonToGuess, setPokemonToGuess] = useState();
 
 
-
+  //Randomly chooses random pokemon from the 4 pokemon taken out of the API
   const getPokemonToGuess = () => {
     var pickRandomPokemon = Math.floor(Math.random() * pokemons.length)
     var pokemonToGuess = pokemons[pickRandomPokemon];
@@ -58,6 +58,7 @@ export default function HomeScreen() {
     }
   }
 
+  // SUBJECT TO CHANGE IF CANT FIGURE OUT OTHER ITEM TO GUESS
   const placePokemonPokedexEntry = () => {
     if(pokemonToGuess != undefined){
       return <Text style={{ fontSize: 25, color: "#ffffff"}}> Pokedex Number: {pokemonToGuess.id} </Text>
@@ -66,15 +67,10 @@ export default function HomeScreen() {
 
   console.log("PokemonToGuess: ", pokemonToGuess)
 
-  const clearArray = () => {
-    console.log("POKEMONS LENGTH: ", pokemons.length)
-    for(var i = 0; i < pokemons.length; i++){
-      pokemons.pop()
-    }
-  }
-
   const [streak, setStreak] = useState(0);
 
+  //CHECKS IF THE POKEMON ASSOCIATED WITH THE BUTTON HAS THE SAME NAME AS pokemonToGuess
+  //ALSO KEEPS TRACK OF STREAK
   const correctPokemon = (pokemonGuessed) => {
     if(pokemonToGuess.name == pokemonGuessed.name){
       setStreak(streak + 1);
@@ -86,6 +82,8 @@ export default function HomeScreen() {
 
   }
 
+  //REFRESHES ALL THE BUTTONS 
+  //RANDOMLY CHOOSES WHETHER TO PLACE IMAGE, CRY, or Pokedex Number
   const placeButtons = () => {
     var randomNum = Math.floor(Math.random() * 10);
     console.log(randomNum)
