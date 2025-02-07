@@ -12,6 +12,7 @@ export interface FavoritePokemon {
   id: number;
   name: string;
   spriteUrl: string;
+  types?: string[];
 }
 
 export const initDatabase = async () => {
@@ -42,6 +43,7 @@ export const initDatabase = async () => {
         pokemon_id INTEGER NOT NULL,
         name TEXT NOT NULL,
         sprite_url TEXT NOT NULL,
+        types TEXT,
         FOREIGN KEY (user_id) REFERENCES users(id)
       );
     `);
@@ -118,8 +120,8 @@ export const getPlayerStats = async (userId: number): Promise<PlayerStats> => {
 export const addFavoritePokemon = async (userId: number, pokemon: FavoritePokemon) => {
   try {
     await db.runAsync(
-      'INSERT OR REPLACE INTO favorite_pokemon (user_id, pokemon_id, name, sprite_url) VALUES (?, ?, ?, ?)',
-      [userId, pokemon.id, pokemon.name, pokemon.spriteUrl]
+      'INSERT OR REPLACE INTO favorite_pokemon (user_id, pokemon_id, name, sprite_url, types) VALUES (?, ?, ?, ?, ?)',
+      [userId, pokemon.id, pokemon.name, pokemon.spriteUrl, pokemon.types ? JSON.stringify(pokemon.types) : null]
     );
     return true;
   } catch (error) {
@@ -143,11 +145,14 @@ export const removeFavoritePokemon = async (userId: number, pokemonId: number) =
 
 export const getFavoritePokemon = async (userId: number): Promise<FavoritePokemon[]> => {
   try {
-    const favorites = await db.getAllAsync<FavoritePokemon>(
-      'SELECT pokemon_id as id, name, sprite_url as spriteUrl FROM favorite_pokemon WHERE user_id = ?',
+    const favorites = await db.getAllAsync<any>(
+      'SELECT pokemon_id as id, name, sprite_url as spriteUrl, types FROM favorite_pokemon WHERE user_id = ?',
       [userId]
     );
-    return favorites || [];
+    return favorites.map(fav => ({
+      ...fav,
+      types: fav.types ? JSON.parse(fav.types) : undefined
+    })) || [];
   } catch (error) {
     console.error('Error getting favorite pokemon:', error);
     return [];

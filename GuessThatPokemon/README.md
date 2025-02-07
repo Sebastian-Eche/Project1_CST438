@@ -1,50 +1,109 @@
-# Welcome to your Expo app 👋
+# Guess That Pokémon!
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A fun and interactive Pokémon guessing game built with React Native and Expo. Test your Pokémon knowledge by trying to identify Pokémon from their silhouettes!
 
-## Get started
+## Features
 
-1. Install dependencies
+- Engaging Pokémon guessing gameplay with silhouettes
+- User authentication system with sign-up and sign-in functionality
+- Beautiful Pokédex-style detail views for each Pokémon
+- Comprehensive Pokémon information including:
+  - Types and abilities
+  - Base stats with visual bars
+  - Evolution chains
+  - Moves list
+  - Habitat and physical characteristics
+- Streak tracking system
+- Favorites system using SQLite database
+- Clean and modern UI inspired by the official Pokédex
+- Sound effects and haptic feedback
+- Animated components and transitions
+- Error handling and loading states
 
+## Technical Stack
+
+### Core Technologies
+- React Native with TypeScript
+- Expo Framework and Router
+- SQLite for data persistence
+- PokeAPI integration
+
+### Expo Libraries
+- expo-sqlite: Database operations
+- expo-haptics: Tactile feedback
+- expo-av: Sound effects
+- AsyncStorage: Session management
+
+### UI/UX
+- React Native StyleSheet
+- Custom Animated API implementations
+- Modern design patterns
+
+## Database Schema
+
+The app uses SQLite with the following tables:
+
+```sql
+-- Users table for authentication
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY,
+  username TEXT UNIQUE,
+  password TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Favorites table for storing user's favorite Pokémon
+CREATE TABLE favorites (
+  id INTEGER PRIMARY KEY,
+  pokemon_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  types TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Logs table for tracking game events
+CREATE TABLE logs (
+  id INTEGER PRIMARY KEY,
+  event_type TEXT NOT NULL,
+  endpoint TEXT,
+  request_data TEXT,
+  response_data TEXT,
+  status_code INTEGER,
+  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
    ```bash
    npm install
    ```
-
-2. Start the app
-
+3. Start the development server:
    ```bash
-    npx expo start
+   npx expo start
    ```
+4. Use the Expo Go app on your mobile device or an emulator to run the application
 
-In the output, you'll find options to open the app in a
+## How to Play
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+1. Create an account or sign in
+2. Launch the game to see a Pokémon silhouette
+3. Choose from four options to guess the Pokémon
+4. Build your streak by making correct guesses
+5. View detailed information about each Pokémon in the Pokédex view
+6. Save your favorite Pokémon to revisit them later
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Data Source
 
-## Get a fresh project
+This app uses the [PokeAPI](https://pokeapi.co/) to fetch Pokémon data, including:
+- Pokémon information and stats
+- Evolution chains
+- Abilities and moves
+- Type information
 
-When you're ready, run:
+## Contributing
 
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Feel free to contribute to this project by submitting issues or pull requests. All contributions are welcome!

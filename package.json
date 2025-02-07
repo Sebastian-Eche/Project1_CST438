@@ -1,1 +1,6 @@
-{}
+{
+  "dependencies": {
+    "expo-linear-gradient": "^14.0.2",
+    "expo-sqlite": "~15.1.2"
+  }
+}

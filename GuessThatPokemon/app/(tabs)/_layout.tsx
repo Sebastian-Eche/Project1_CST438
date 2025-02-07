@@ -1,58 +1,68 @@
 import { Tabs } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Platform, View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import Header from '@/components/Header';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS, FONTS, SHADOWS } from '@/constants/Theme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const [username, setUsername] = useState<string | null>(null);
-
-  useEffect(() => {
-    const getUsername = async () => {
-      const storedUsername = await AsyncStorage.getItem('username');
-      setUsername(storedUsername);
-    };
-    getUsername();
-  }, []);
+  const bottomPadding = Platform.OS === 'ios' ? 35 : 15;
+  const tabBarHeight = Platform.OS === 'ios' ? 85 : 65;
 
   return (
-    <View style={{ flex: 1 }}>
-      <Header username={username} />
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          headerShown: false,
-          tabBarButton: HapticTab,
-          tabBarBackground: TabBarBackground,
-          tabBarStyle: Platform.select({
-            ios: {
-              position: 'absolute',
-            },
-            default: {},
-          }),
-        }}>
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Game',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="gamecontroller.fill" color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="favorites"
-          options={{
-            title: 'Favorites',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="heart.fill" color={color} />,
-          }}
-        />
-      </Tabs>
-    </View>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 0,
+          position: 'absolute',
+          height: tabBarHeight,
+          paddingBottom: bottomPadding,
+          paddingTop: 10,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          elevation: 0,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: -2,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+          ...SHADOWS.small,
+        },
+        tabBarActiveTintColor: COLORS.pokemon.blue,
+        tabBarInactiveTintColor: '#666666',
+        tabBarItemStyle: {
+          paddingTop: 5,
+        },
+        tabBarLabelStyle: {
+          fontWeight: FONTS.weight.medium,
+          fontSize: FONTS.size.xs,
+          paddingBottom: 5,
+        },
+      }}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Guess That Pokémon',
+          tabBarLabel: 'Game',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="game-controller" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="favorites"
+        options={{
+          title: 'My Favorites',
+          tabBarLabel: 'Favorites',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="heart" size={24} color={color} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
