@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { Audio } from 'expo-av'
 import { SQLiteProvider } from 'expo-sqlite';
 import { initDatabase, updatePlayerStats, getPlayerStats } from '../../database/db';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Pokemon {
   id: number;
@@ -20,22 +21,18 @@ export default function HomeScreen() {
   const [streak, setStreak] = useState(0);
   const [topStreak, setTopStreak] = useState(0);
   const [pokemonToGuess, setPokemonToGuess] = useState<Pokemon | undefined>();
+  const [userId, setUserId] = useState<number | null>(null);
 
-  // Initialize database
+  // Initialize database and load user data
   useEffect(() => {
     const setup = async () => {
       try {
-        const dbInitialized = await initDatabase();
-        console.log('Database initialization result:', dbInitialized);
-        
-        if (dbInitialized) {
-          const stats = await getPlayerStats();
-          console.log('Initial stats:', stats);
+        const storedUserId = await AsyncStorage.getItem('userId');
+        if (storedUserId) {
+          setUserId(parseInt(storedUserId));
+          const stats = await getPlayerStats(parseInt(storedUserId));
           setStreak(stats.currentStreak || 0);
           setTopStreak(stats.topStreak || 0);
-        } else {
-          setStreak(0);
-          setTopStreak(0);
         }
         
         await dataFetch();
@@ -97,38 +94,36 @@ export default function HomeScreen() {
     }
   }
 
-  const correctPokemon = async (pokemonGuessed: Pokemon) => {
-    if (!pokemonToGuess) return;
+  const handleGameOver = async () => {
+    if (userId) {
+      // Update stats in the database
+      const newTopStreak = Math.max(topStreak, streak);
+      await updatePlayerStats(userId, 0); // Reset current streak to 0
+      setTopStreak(newTopStreak);
+      setStreak(0);
+    } else {
+      // Handle offline mode
+      const newTopStreak = Math.max(topStreak, streak);
+      setTopStreak(newTopStreak);
+      setStreak(0);
+    }
+    // Fetch new Pokemon for the next round
+    await dataFetch();
+  };
 
-    const isCorrect = pokemonToGuess.name.toLowerCase() === pokemonGuessed.name.toLowerCase();
-    console.log(`Player guessed: ${pokemonGuessed.name} (${isCorrect ? 'Correct' : 'Wrong'})`);
-
-    try {
-      if (isCorrect) {
-        const newStreak = streak + 1;
-        setStreak(newStreak);
-        console.log('✅ Correct! Updating streak to:', newStreak);
-        
-        const stats = await updatePlayerStats(newStreak);
-        setTopStreak(stats.topStreak);
-      } else {
-        const currentStats = await getPlayerStats();
-        console.log('❌ Wrong! The correct answer was:', pokemonToGuess.name);
-        
-        setStreak(0);
-        const stats = await updatePlayerStats(0);
-        setTopStreak(Math.max(currentStats.topStreak, stats.topStreak));
+  const correctPokemon = async (selectedPokemon: Pokemon) => {
+    if (selectedPokemon.name === pokemonToGuess?.name) {
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      
+      if (userId) {
+        // Update stats in the database
+        await updatePlayerStats(userId, newStreak);
       }
-
+      
       await dataFetch();
-    } catch (error) {
-      console.error('Error in game logic:', error);
-      if (isCorrect) {
-        setStreak(prev => prev + 1);
-      } else {
-        setStreak(0);
-      }
-      await dataFetch();
+    } else {
+      await handleGameOver();
     }
   };
 

@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { getFavoritePokemon, addFavoritePokemon, removeFavoritePokemon } from '../../database/db';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Pokemon {
   id: number;
@@ -32,15 +33,23 @@ export default function FavoritesScreen() {
   const [searchResults, setSearchResults] = useState<Pokemon[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
 
-  // Load favorites when component mounts
+  // Load userId and favorites when component mounts
   useEffect(() => {
-    loadFavorites();
+    const initialize = async () => {
+      const storedUserId = await AsyncStorage.getItem('userId');
+      if (storedUserId) {
+        setUserId(parseInt(storedUserId));
+        loadFavorites(parseInt(storedUserId));
+      }
+    };
+    initialize();
   }, []);
 
-  const loadFavorites = async () => {
+  const loadFavorites = async (currentUserId: number) => {
     try {
-      const favs = await getFavoritePokemon();
+      const favs = await getFavoritePokemon(currentUserId);
       setFavorites(favs);
     } catch (error) {
       console.error('Error loading favorites:', error);
@@ -56,16 +65,14 @@ export default function FavoritesScreen() {
 
     setIsLoading(true);
     try {
-      // Search in first 1025 Pokemon (adjust range as needed)
       const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
       const data = await response.json();
       const filteredPokemon = data.results
         .filter((pokemon: { name: string }) => 
           pokemon.name.toLowerCase().includes(query.toLowerCase())
         )
-        .slice(0, 10); // Limit to first 10 matches
+        .slice(0, 10);
 
-      // Fetch detailed data for each matching Pokemon
       const detailedResults = await Promise.all(
         filteredPokemon.map(async (pokemon: { url: string }) => {
           const detailResponse = await fetch(pokemon.url);
@@ -82,6 +89,11 @@ export default function FavoritesScreen() {
   };
 
   const addToFavorites = async (pokemon: Pokemon) => {
+    if (!userId) {
+      console.log('Cannot add favorite: No user ID found');
+      return;
+    }
+
     try {
       const newFavorite = {
         id: pokemon.id,
@@ -89,7 +101,7 @@ export default function FavoritesScreen() {
         spriteUrl: pokemon.sprites.front_default
       };
       
-      const success = await addFavoritePokemon(newFavorite);
+      const success = await addFavoritePokemon(userId, newFavorite);
       if (success) {
         setFavorites(prev => [...prev, newFavorite]);
         console.log('✅ Added to favorites:', pokemon.name);
@@ -100,8 +112,13 @@ export default function FavoritesScreen() {
   };
 
   const removeFromFavorites = async (pokemonId: number) => {
+    if (!userId) {
+      console.log('Cannot remove favorite: No user ID found');
+      return;
+    }
+
     try {
-      const success = await removeFavoritePokemon(pokemonId);
+      const success = await removeFavoritePokemon(userId, pokemonId);
       if (success) {
         setFavorites(prev => prev.filter(fav => fav.id !== pokemonId));
         console.log('❌ Removed from favorites');
