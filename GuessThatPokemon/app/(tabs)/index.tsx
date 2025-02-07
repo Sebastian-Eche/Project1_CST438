@@ -145,10 +145,11 @@ const HomeScreen = () => {
   const [pokemonToGuess, setPokemonToGuess] = useState<Pokemon | undefined>();
   const [userId, setUserId] = useState<number | null>(null);
   const [username, setUsername] = useState<string | null>(null);
-  const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
+  const [showAnswer, setShowAnswer] = useState<'correct' | 'incorrect' | null>(null);
 
   // Animation values
-  const statsFadeAnim = useRef(new Animated.Value(0)).current;
+  const statsFadeAnim = useRef(new Animated.Value(1)).current;
+  const statsColorAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
 
@@ -205,8 +206,7 @@ const HomeScreen = () => {
       const randomIndex = Math.floor(Math.random() * 4);
       const selectedPokemon = newPokemonArray[randomIndex];
       setPokemonToGuess(selectedPokemon);
-      setCorrectAnswer(selectedPokemon.name.toUpperCase());
-      console.log(`🎯 Correct Answer: ${selectedPokemon.name.toUpperCase()}`);
+      console.log(`🎯 Selected Pokemon: ${selectedPokemon.name.toUpperCase()}`);
     } catch (error) {
       console.error('Error fetching Pokemon:', error);
     }
@@ -284,14 +284,20 @@ const HomeScreen = () => {
    */
   const handlePokemonSelect = async (selectedPokemon: Pokemon) => {
     if (selectedPokemon.name === pokemonToGuess?.name) {
+      showAnswerIndicator(true);
       const newStreak = streak + 1;
       setStreak(newStreak);
       if (userId) {
         await updatePlayerStats(userId, newStreak);
       }
-      await fetchRandomPokemon();
+      setTimeout(() => {
+        fetchRandomPokemon();
+      }, 1200);
     } else {
-      await handleGameOver();
+      showAnswerIndicator(false);
+      setTimeout(() => {
+        handleGameOver();
+      }, 1200);
     }
   };
 
@@ -385,11 +391,77 @@ const HomeScreen = () => {
     }
   };
 
+  /**
+   * Handles answer animation
+   */
+  const showAnswerIndicator = (isCorrect: boolean) => {
+    setShowAnswer(isCorrect ? 'correct' : 'incorrect');
+    statsColorAnim.setValue(0);
+    
+    Animated.sequence([
+      Animated.spring(statsColorAnim, {
+        toValue: 1,
+        tension: 50,
+        friction: 7,
+        useNativeDriver: false,
+      }),
+      Animated.delay(1000),
+      Animated.spring(statsColorAnim, {
+        toValue: 0,
+        tension: 50,
+        friction: 7,
+        useNativeDriver: false,
+      }),
+    ]).start(() => {
+      setShowAnswer(null);
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.statsContainer, { opacity: statsFadeAnim }]}>
-        <Text style={styles.statsText}>Current Streak: {streak || 0}</Text>
-        <Text style={styles.statsText}>Top Streak: {topStreak || 0}</Text>
+      <Animated.View 
+        style={[
+          styles.statsContainer, 
+          { 
+            backgroundColor: statsColorAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: ['#F5F5F5', showAnswer === 'correct' ? '#4CAF50' : '#F44336']
+            }),
+            transform: [
+              { scale: statsColorAnim.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: [1, 1.05, 1]
+              }) }
+            ]
+          }
+        ]}
+      >
+        <Animated.Text 
+          style={[
+            styles.statsText,
+            {
+              color: statsColorAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['#333333', '#FFFFFF']
+              })
+            }
+          ]}
+        >
+          Current Streak: {streak || 0}
+        </Animated.Text>
+        <Animated.Text 
+          style={[
+            styles.statsText,
+            {
+              color: statsColorAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['#333333', '#FFFFFF']
+              })
+            }
+          ]}
+        >
+          Top Streak: {topStreak || 0}
+        </Animated.Text>
       </Animated.View>
       
       {renderGameInterface()}
@@ -431,13 +503,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
     padding: 15,
-    backgroundColor: '#F5F5F5',
     borderRadius: 15,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   } as ViewStyle,
   statsText: {
     fontSize: 18,
-    color: '#333333',
     fontWeight: 'bold',
+    textAlign: 'center',
   } as TextStyle,
   gameContainer: {
     flex: 1,

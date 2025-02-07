@@ -14,7 +14,6 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
-          borderTopWidth: 0,
           position: 'absolute',
           height: tabBarHeight,
           paddingBottom: bottomPadding,
@@ -32,8 +31,8 @@ export default function TabLayout() {
           shadowRadius: 3,
           ...SHADOWS.small,
         },
-        tabBarActiveTintColor: COLORS.pokemon.blue,
-        tabBarInactiveTintColor: '#666666',
+        tabBarActiveTintColor: '#333333',
+        tabBarInactiveTintColor: '#999999',
         tabBarItemStyle: {
           paddingTop: 5,
         },
@@ -49,7 +48,7 @@ export default function TabLayout() {
           title: 'Guess That Pokémon',
           tabBarLabel: 'Game',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="game-controller" size={24} color={color} />
+            <Ionicons name="game-controller" size={size} color={color} />
           ),
         }}
       />
@@ -59,7 +58,7 @@ export default function TabLayout() {
           title: 'My Favorites',
           tabBarLabel: 'Favorites',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="heart" size={24} color={color} />
+            <Ionicons name="heart" size={size} color={color} />
           ),
         }}
       />

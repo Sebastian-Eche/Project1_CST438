@@ -2,5 +2,9 @@
   "dependencies": {
     "expo-linear-gradient": "^14.0.2",
     "expo-sqlite": "~15.1.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/react": "~18.3.12"
   }
 }

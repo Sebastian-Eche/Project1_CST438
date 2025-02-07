@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Platform } from 'react-native';
 import { signInUser } from '../database/db';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 200,
-    backgroundColor: COLORS.pokemon.red,
+    backgroundColor: '#8B0000',
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomLeftRadius: 30,
@@ -126,9 +126,24 @@ const styles = StyleSheet.create({
   titlePart: {
     fontSize: FONTS.size.xxl,
     fontWeight: FONTS.weight.bold,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
+    color: '#000000',
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 4, height: 4 },
+    textShadowRadius: 0,
+    letterSpacing: 1,
+    ...Platform.select({
+      ios: {
+        textShadowColor: 'rgba(0, 0, 0, 0.4)',
+        textShadowOffset: { width: 4, height: 4 },
+        textShadowRadius: 0,
+      },
+      android: {
+        elevation: 8,
+        textShadowColor: 'rgba(0, 0, 0, 0.4)',
+        textShadowOffset: { width: 4, height: 4 },
+        textShadowRadius: 0,
+      },
+    }),
   },
   formContainer: {
     padding: SPACING.xl,
@@ -172,7 +187,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   signInButton: {
-    backgroundColor: COLORS.pokemon.red,
+    backgroundColor: '#8B0000',
     padding: SPACING.md,
     borderRadius: 12,
     alignItems: 'center',
