@@ -146,6 +146,7 @@ const HomeScreen = () => {
   const [userId, setUserId] = useState<number | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState<'correct' | 'incorrect' | null>(null);
+  const [hasGuessed, setHasGuessed] = useState(false);
 
   // Animation values
   const statsFadeAnim = useRef(new Animated.Value(1)).current;
@@ -244,8 +245,8 @@ const HomeScreen = () => {
   /**
    * Renders the Pokémon image with animation
    */
-  const renderPokemonImage = (isCryActive: boolean) => {
-    if(!isCryActive && pokemonToGuess){
+  const renderPokemonImage = (isSoundGuess: boolean) => {
+    if ((!isSoundGuess || (isSoundGuess && hasGuessed)) && pokemonToGuess) {
       return (
         <Animated.View 
           style={[
@@ -283,6 +284,7 @@ const HomeScreen = () => {
    * Handles Pokémon selection
    */
   const handlePokemonSelect = async (selectedPokemon: Pokemon) => {
+    setHasGuessed(true);
     if (selectedPokemon.name === pokemonToGuess?.name) {
       showAnswerIndicator(true);
       const newStreak = streak + 1;
@@ -291,11 +293,13 @@ const HomeScreen = () => {
         await updatePlayerStats(userId, newStreak);
       }
       setTimeout(() => {
+        setHasGuessed(false);
         fetchRandomPokemon();
       }, 1200);
     } else {
       showAnswerIndicator(false);
       setTimeout(() => {
+        setHasGuessed(false);
         handleGameOver();
       }, 1200);
     }
@@ -345,7 +349,7 @@ const HomeScreen = () => {
               )}
             </View>
           </View>
-          {!isSoundGuess && renderPokemonImage(false)}
+          {renderPokemonImage(isSoundGuess)}
           <View style={styles.buttonContainer}>
             {pokemons.map((pokemon, index) => (
               <CustomButton
