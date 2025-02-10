@@ -1,43 +1,65 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Platform, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS, FONTS, SHADOWS } from '@/constants/Theme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const bottomPadding = Platform.OS === 'ios' ? 35 : 15;
+  const tabBarHeight = Platform.OS === 'ios' ? 85 : 65;
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          position: 'absolute',
+          height: tabBarHeight,
+          paddingBottom: bottomPadding,
+          paddingTop: 10,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          elevation: 0,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: -2,
           },
-          default: {},
-        }),
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+          ...SHADOWS.small,
+        },
+        tabBarActiveTintColor: '#333333',
+        tabBarInactiveTintColor: '#999999',
+        tabBarItemStyle: {
+          paddingTop: 5,
+        },
+        tabBarLabelStyle: {
+          fontWeight: FONTS.weight.medium,
+          fontSize: FONTS.size.xs,
+          paddingBottom: 5,
+        },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Game',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="gamecontroller.fill" color={color} />,
+          title: 'Guess That Pokémon',
+          tabBarLabel: 'Game',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="game-controller" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="favorites"
         options={{
-          title: 'Favorites',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="heart.fill" color={color} />,
+          title: 'My Favorites',
+          tabBarLabel: 'Favorites',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="heart" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
