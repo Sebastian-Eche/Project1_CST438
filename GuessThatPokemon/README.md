@@ -4,75 +4,21 @@ A fun and interactive Pokémon guessing game built with React Native and Expo. T
 
 ## Features
 
-- Engaging Pokémon guessing gameplay with silhouettes
-- User authentication system with sign-up and sign-in functionality
+- Engaging Pokémon guessing gameplay
 - Beautiful Pokédex-style detail views for each Pokémon
-- Comprehensive Pokémon information including:
-  - Types and abilities
-  - Base stats with visual bars
-  - Evolution chains
-  - Moves list
-  - Habitat and physical characteristics
-- Streak tracking system
-- Favorites system using SQLite database
+- Information about Pokémon types, abilities, and stats
+- Evolution chain visualization
+- Favorites system using SQLite database for persistent storage
 - Clean and modern UI inspired by the official Pokédex
-- Sound effects and haptic feedback
-- Animated components and transitions
-- Error handling and loading states
 
 ## Technical Stack
 
-### Core Technologies
-- React Native with TypeScript
-- Expo Framework and Router
-- SQLite for data persistence
-- PokeAPI integration
-
-### Expo Libraries
-- expo-sqlite: Database operations
-- expo-haptics: Tactile feedback
-- expo-av: Sound effects
-- AsyncStorage: Session management
-
-### UI/UX
-- React Native StyleSheet
-- Custom Animated API implementations
-- Modern design patterns
-
-## Database Schema
-
-The app uses SQLite with the following tables:
-
-```sql
--- Users table for authentication
-CREATE TABLE users (
-  id INTEGER PRIMARY KEY,
-  username TEXT UNIQUE,
-  password TEXT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Favorites table for storing user's favorite Pokémon
-CREATE TABLE favorites (
-  id INTEGER PRIMARY KEY,
-  pokemon_id INTEGER NOT NULL,
-  name TEXT NOT NULL,
-  image_url TEXT NOT NULL,
-  types TEXT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Logs table for tracking game events
-CREATE TABLE logs (
-  id INTEGER PRIMARY KEY,
-  event_type TEXT NOT NULL,
-  endpoint TEXT,
-  request_data TEXT,
-  response_data TEXT,
-  status_code INTEGER,
-  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
+- React Native
+- Expo Router for navigation
+- SQLite database for local data storage
+- PokeAPI for Pokémon data
+- TypeScript for type safety
+- Modern styling with React Native StyleSheet
 
 ## Getting Started
 
@@ -89,12 +35,11 @@ CREATE TABLE logs (
 
 ## How to Play
 
-1. Create an account or sign in
-2. Launch the game to see a Pokémon silhouette
-3. Choose from four options to guess the Pokémon
-4. Build your streak by making correct guesses
-5. View detailed information about each Pokémon in the Pokédex view
-6. Save your favorite Pokémon to revisit them later
+1. Launch the app and you'll be presented with a Pokémon silhouette
+2. Try to guess the Pokémon's name
+3. Get feedback on your guess
+4. View detailed information about each Pokémon in the Pokédex view
+5. Save your favorite Pokémon to revisit them later
 
 ## Data Source
 
