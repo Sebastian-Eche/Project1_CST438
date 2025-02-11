@@ -1,16 +1,16 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import { ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { Platform } from 'react-native';
+import { View } from 'react-native';
 import { SQLiteProvider } from 'expo-sqlite';
 import { initDatabase } from '../database/db';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { HapticTab } from '../components/HapticTab';
+import { COLORS, customDarkTheme, customLightTheme } from '@/constants/Theme';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,14 +31,20 @@ export default function RootLayout() {
     return null;
   }
 
+  const theme = colorScheme === 'dark' ? customDarkTheme : customLightTheme;
+
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={theme}>
       <SQLiteProvider databaseName="pokemon.db" onInit={initDatabase}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
+        <View style={{ flex: 1, backgroundColor: COLORS.dark.background }}>
+          <StatusBar style="light" />
+          <Stack screenOptions={{
+            headerShown: false,
+            contentStyle: {
+              backgroundColor: COLORS.dark.background,
+            },
+          }} />
+        </View>
       </SQLiteProvider>
     </ThemeProvider>
   );
