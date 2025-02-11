@@ -1,4 +1,14 @@
-import { useState, useEffect } from 'react';
+/**
+ * Favorites Screen
+ * 
+ * Displays a grid of user's favorite Pokémon with features:
+ * - View favorite Pokémon in a card layout
+ * - Add new Pokémon to favorites via search
+ * - Remove Pokémon from favorites
+ * - Navigate to detailed Pokémon information
+ */
+
+import { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,22 +19,166 @@ import {
   TouchableOpacity,
   Modal,
   ActivityIndicator,
+  Platform,
+  Animated,
+  ImageBackground,
 } from 'react-native';
 import { getFavoritePokemon, addFavoritePokemon, removeFavoritePokemon } from '../../database/db';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import { COLORS, FONTS } from '@/constants/Theme';
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
 
+// Types
 interface Pokemon {
   id: number;
   name: string;
   sprites: {
     front_default: string;
   };
+  types: {
+    type: {
+      name: string;
+    };
+  }[];
 }
 
 interface FavoritePokemon {
   id: number;
   name: string;
   spriteUrl: string;
+  types?: string[];
 }
+
+// Default favorites for non-logged in users
+const DEFAULT_FAVORITES: FavoritePokemon[] = [
+  { id: 1, name: 'bulbasaur', spriteUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png', types: ['grass', 'poison'] },
+  { id: 4, name: 'charmander', spriteUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png', types: ['fire'] },
+  { id: 7, name: 'squirtle', spriteUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png', types: ['water'] },
+  { id: 25, name: 'pikachu', spriteUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png', types: ['electric'] },
+];
+
+const CustomButton = ({ title, onPress, style = {} }: { title: string; onPress: () => void; style?: any }) => (
+  <TouchableOpacity style={[styles.customButton, style]} onPress={onPress}>
+    <Text style={styles.customButtonText}>{title}</Text>
+  </TouchableOpacity>
+);
+
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
+
+/**
+ * Animated Pokémon card component
+ */
+const FavoriteItem = ({ item, onRemove, index, onPress, userId }: { 
+  item: FavoritePokemon; 
+  onRemove: () => void; 
+  index: number;
+  onPress: () => void;
+  userId: number | null;
+}) => {
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(50)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 50,
+        friction: 7,
+        useNativeDriver: true,
+        delay: index * 100,
+      }),
+      Animated.spring(translateY, {
+        toValue: 0,
+        tension: 50,
+        friction: 7,
+        useNativeDriver: true,
+        delay: index * 100,
+      }),
+    ]).start();
+  }, []);
+
+  const backgroundColor = item.types && item.types[0] ? COLORS.types[item.types[0] as keyof typeof COLORS.types] : COLORS.types.normal;
+
+  return (
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={styles.cardWrapper}>
+      <Animated.View
+        style={[
+          styles.favoriteItem,
+          {
+            transform: [{ scale: scaleAnim }, { translateY }],
+          },
+        ]}
+      >
+        <View style={[styles.cardBackground, { backgroundColor }]}>
+          <Image 
+            source={require('../../assets/images/pokemon_backdrop-removebg-preview.png')} 
+            style={styles.backdropImage}
+            resizeMode="contain"
+          />
+          <View style={styles.cardContent}>
+            <View style={styles.pokemonInfo}>
+              <Text style={styles.pokemonNumber}>#{item.id.toString().padStart(3, '0')}</Text>
+              <Text style={styles.pokemonName}>{item.name}</Text>
+            </View>
+            {userId && (
+              <TouchableOpacity 
+                style={styles.removeButton}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  onRemove();
+                }}
+              >
+                <Text style={styles.removeButtonText}>✕</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+        <Image 
+          source={{ uri: item.spriteUrl }} 
+          style={styles.pokemonImage}
+          resizeMode="contain"
+        />
+      </Animated.View>
+    </TouchableOpacity>
+  );
+};
+
+/**
+ * Search result item component with animation
+ */
+const SearchResultItem = ({ item, onPress, index }: { item: Pokemon; onPress: () => void; index: number }) => {
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+  
+  useEffect(() => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      tension: 50,
+      friction: 7,
+      useNativeDriver: true,
+      delay: index * 50,
+    }).start();
+  }, []);
+
+  return (
+    <Animated.View 
+      style={[
+        styles.searchResultItem,
+        { transform: [{ scale: scaleAnim }] },
+      ]}
+    >
+      <TouchableOpacity 
+        style={styles.searchResultContent}
+        onPress={onPress}
+        activeOpacity={0.7}
+      >
+        <Image source={{ uri: item.sprites.front_default }} style={styles.searchResultImage} />
+        <Text style={styles.searchResultText}>{item.name}</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+};
 
 export default function FavoritesScreen() {
   const [favorites, setFavorites] = useState<FavoritePokemon[]>([]);
@@ -32,15 +186,25 @@ export default function FavoritesScreen() {
   const [searchResults, setSearchResults] = useState<Pokemon[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
+  const router = useRouter();
 
-  // Load favorites when component mounts
   useEffect(() => {
-    loadFavorites();
+    const initialize = async () => {
+      const storedUserId = await AsyncStorage.getItem('userId');
+      if (storedUserId) {
+        setUserId(parseInt(storedUserId));
+        loadFavorites(parseInt(storedUserId));
+      } else {
+        setFavorites(DEFAULT_FAVORITES);
+      }
+    };
+    initialize();
   }, []);
 
-  const loadFavorites = async () => {
+  const loadFavorites = async (currentUserId: number) => {
     try {
-      const favs = await getFavoritePokemon();
+      const favs = await getFavoritePokemon(currentUserId);
       setFavorites(favs);
     } catch (error) {
       console.error('Error loading favorites:', error);
@@ -56,43 +220,52 @@ export default function FavoritesScreen() {
 
     setIsLoading(true);
     try {
-      // Search in first 1025 Pokemon (adjust range as needed)
       const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
+      if (!response.ok) throw new Error('Failed to fetch Pokemon list');
+      
       const data = await response.json();
       const filteredPokemon = data.results
         .filter((pokemon: { name: string }) => 
           pokemon.name.toLowerCase().includes(query.toLowerCase())
         )
-        .slice(0, 10); // Limit to first 10 matches
+        .slice(0, 10);
 
-      // Fetch detailed data for each matching Pokemon
+      if (filteredPokemon.length === 0) {
+        setSearchResults([]);
+        return;
+      }
+
       const detailedResults = await Promise.all(
         filteredPokemon.map(async (pokemon: { url: string }) => {
           const detailResponse = await fetch(pokemon.url);
+          if (!detailResponse.ok) return null;
           return detailResponse.json();
         })
       );
 
-      setSearchResults(detailedResults);
+      setSearchResults(detailedResults.filter(Boolean));
     } catch (error) {
       console.error('Error searching Pokemon:', error);
+      setSearchResults([]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const addToFavorites = async (pokemon: Pokemon) => {
+    if (!userId) return;
+
     try {
       const newFavorite = {
         id: pokemon.id,
         name: pokemon.name,
-        spriteUrl: pokemon.sprites.front_default
+        spriteUrl: pokemon.sprites.front_default,
+        types: pokemon.types.map(t => t.type.name)
       };
       
-      const success = await addFavoritePokemon(newFavorite);
+      const success = await addFavoritePokemon(userId, newFavorite);
       if (success) {
         setFavorites(prev => [...prev, newFavorite]);
-        console.log('✅ Added to favorites:', pokemon.name);
       }
     } catch (error) {
       console.error('Error adding to favorites:', error);
@@ -100,64 +273,46 @@ export default function FavoritesScreen() {
   };
 
   const removeFromFavorites = async (pokemonId: number) => {
+    if (!userId) return;
+
     try {
-      const success = await removeFavoritePokemon(pokemonId);
+      const success = await removeFavoritePokemon(userId, pokemonId);
       if (success) {
         setFavorites(prev => prev.filter(fav => fav.id !== pokemonId));
-        console.log('❌ Removed from favorites');
       }
     } catch (error) {
       console.error('Error removing from favorites:', error);
     }
   };
 
-  const renderFavoriteItem = ({ item }: { item: FavoritePokemon }) => (
-    <View style={styles.favoriteItem}>
-      <Image source={{ uri: item.spriteUrl }} style={styles.pokemonImage} />
-      <Text style={styles.pokemonName}>{item.name}</Text>
-      <TouchableOpacity 
-        style={styles.removeButton}
-        onPress={() => removeFromFavorites(item.id)}
-      >
-        <Text style={styles.removeButtonText}>❌</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  const renderSearchResult = ({ item }: { item: Pokemon }) => (
-    <TouchableOpacity 
-      style={styles.searchResultItem}
-      onPress={() => {
-        addToFavorites(item);
-        setIsModalVisible(false);
-        setSearchQuery('');
-        setSearchResults([]);
-      }}
-    >
-      <Image source={{ uri: item.sprites.front_default }} style={styles.searchResultImage} />
-      <Text style={styles.searchResultText}>{item.name}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>My Favorite Pokémon</Text>
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={() => setIsModalVisible(true)}
-        >
-          <Text style={styles.addButtonText}>Add New</Text>
-        </TouchableOpacity>
-      </View>
-
       <FlatList
         data={favorites}
-        renderItem={renderFavoriteItem}
+        renderItem={({ item, index }) => (
+          <FavoriteItem
+            item={item}
+            onRemove={() => removeFromFavorites(item.id)}
+            onPress={() => router.push(`/pokemon/${item.id}`)}
+            index={index}
+            userId={userId}
+          />
+        )}
         keyExtractor={item => item.id.toString()}
         numColumns={2}
         contentContainerStyle={styles.favoritesList}
+        showsVerticalScrollIndicator={false}
       />
+
+      <TouchableOpacity 
+        style={styles.floatingAddButton}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          setIsModalVisible(true);
+        }}
+      >
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
 
       <Modal
         visible={isModalVisible}
@@ -172,11 +327,15 @@ export default function FavoritesScreen() {
                 placeholder="Search Pokémon..."
                 value={searchQuery}
                 onChangeText={searchPokemon}
-                placeholderTextColor="#666"
+                placeholderTextColor={COLORS.dark.textSecondary}
+                autoFocus
+                autoCapitalize="none"
+                autoCorrect={false}
               />
               <TouchableOpacity 
                 style={styles.closeButton}
                 onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   setIsModalVisible(false);
                   setSearchQuery('');
                   setSearchResults([]);
@@ -187,13 +346,34 @@ export default function FavoritesScreen() {
             </View>
 
             {isLoading ? (
-              <ActivityIndicator size="large" color="#fff" />
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={COLORS.pokemon.yellow} />
+                <Text style={styles.loadingText}>Searching Pokémon...</Text>
+              </View>
+            ) : searchResults.length === 0 && searchQuery.length >= 2 ? (
+              <View style={styles.noResultsContainer}>
+                <Text style={styles.noResultsText}>No Pokémon found</Text>
+              </View>
             ) : (
               <FlatList
                 data={searchResults}
-                renderItem={renderSearchResult}
+                renderItem={({ item, index }) => (
+                  <SearchResultItem
+                    item={item}
+                    index={index}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      addToFavorites(item);
+                      setIsModalVisible(false);
+                      setSearchQuery('');
+                      setSearchResults([]);
+                    }}
+                  />
+                )}
                 keyExtractor={item => item.id.toString()}
                 style={styles.searchResults}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
               />
             )}
           </View>
@@ -206,67 +386,114 @@ export default function FavoritesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1a',
-    padding: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  addButton: {
-    backgroundColor: '#4CAF50',
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-  },
-  addButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: Platform.OS === 'ios' ? 100 : 80,
+    backgroundColor: '#FFFFFF',
   },
   favoritesList: {
-    paddingBottom: 20,
+    paddingHorizontal: 5,
+  },
+  cardWrapper: {
+    flex: 1,
+    padding: 8,
+    minWidth: '50%',
   },
   favoriteItem: {
+    aspectRatio: 1.6,
+    position: 'relative',
+    borderRadius: 16,
+    overflow: 'visible',
+  },
+  cardBackground: {
     flex: 1,
-    margin: 5,
-    padding: 10,
-    backgroundColor: '#2a2a2a',
-    borderRadius: 10,
-    alignItems: 'center',
+    borderRadius: 16,
+    padding: 16,
+    overflow: 'hidden',
     position: 'relative',
   },
-  pokemonImage: {
-    width: 100,
-    height: 100,
+  backdropImage: {
+    position: 'absolute',
+    right: -40,
+    top: 30,
+    width: '80%',
+    height: '80%',
+    opacity: 0.2,
+    transform: [{ scale: 3.2 }],
+  },
+  cardContent: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  pokemonInfo: {
+    flex: 1,
+  },
+  pokemonNumber: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: FONTS.size.sm,
+    fontWeight: '600',
+    marginBottom: 4,
   },
   pokemonName: {
-    color: '#ffffff',
-    marginTop: 5,
+    color: '#FFFFFF',
+    fontSize: FONTS.size.lg,
+    fontWeight: '700',
     textTransform: 'capitalize',
   },
-  removeButton: {
+  pokemonImage: {
+    width: '65%',
+    height: '65%',
     position: 'absolute',
-    top: 5,
-    right: 5,
-    padding: 5,
+    right: -10,
+    bottom: -10,
+    zIndex: 1,
+  },
+  removeButton: {
+    opacity: 0.8,
+    padding: 4,
   },
   removeButtonText: {
-    fontSize: 16,
+    color: '#FFFFFF',
+    fontSize: FONTS.size.sm,
+    fontWeight: '600',
+  },
+  floatingAddButton: {
+    position: 'absolute',
+    bottom: Platform.OS === 'ios' ? 100 : 80,
+    right: 20,
+    backgroundColor: COLORS.pokemon.blue,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+    zIndex: 1000,
+  },
+  addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginTop: -2,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
@@ -279,38 +506,79 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    backgroundColor: '#2a2a2a',
-    padding: 10,
-    borderRadius: 10,
-    color: '#ffffff',
+    backgroundColor: '#F5F5F5',
+    padding: 15,
+    borderRadius: 12,
+    color: '#333333',
     marginRight: 10,
+    fontSize: FONTS.size.md,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
   },
   closeButton: {
-    padding: 10,
+    backgroundColor: '#F5F5F5',
+    padding: 15,
+    borderRadius: 12,
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   closeButtonText: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: 'bold',
+    color: '#333333',
+    fontSize: FONTS.size.md,
+    fontWeight: FONTS.weight.bold,
   },
   searchResults: {
     maxHeight: '80%',
   },
   searchResultItem: {
+    marginBottom: 8,
+  },
+  searchResultContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#2a2a2a',
-    marginBottom: 5,
-    borderRadius: 10,
+    padding: 12,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
   },
   searchResultImage: {
     width: 50,
     height: 50,
-    marginRight: 10,
+    marginRight: 12,
   },
   searchResultText: {
-    color: '#ffffff',
+    color: '#333333',
+    fontSize: FONTS.size.md,
+    fontWeight: FONTS.weight.medium,
     textTransform: 'capitalize',
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: '#333333',
+    fontSize: FONTS.size.md,
+    fontWeight: FONTS.weight.medium,
+    marginTop: 12,
+  },
+  noResultsContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  noResultsText: {
+    color: '#333333',
+    fontSize: FONTS.size.md,
+    fontWeight: FONTS.weight.medium,
   },
 });
