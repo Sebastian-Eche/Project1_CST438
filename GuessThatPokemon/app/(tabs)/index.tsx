@@ -147,6 +147,9 @@ const HomeScreen = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState<'correct' | 'incorrect' | null>(null);
   const [hasGuessed, setHasGuessed] = useState(false);
+  const [isSoundGuess, setSoundGuess] = useState(false);
+  const [isPokedexNum, setPokedexNum] = useState(false);
+  const [isCryPlayed, setCryPlayed] = useState(false);
 
   // Animation values
   const statsFadeAnim = useRef(new Animated.Value(1)).current;
@@ -240,13 +243,21 @@ const HomeScreen = () => {
     if (pokemonToGuess) {
       animateNewPokemon();
     }
+    const randomNum = Math.floor(Math.random() * 10);
+    const isPokemonCry = streak >= 5 && streak < 10 && randomNum >= 4 && randomNum <= 6 || streak >= 10 && randomNum >= 2 && randomNum <= 6;
+    setSoundGuess(isPokemonCry)
+
+    const isPokedex = streak >= 10 && randomNum >= 7;
+    setPokedexNum(isPokedex)
+
+    setCryPlayed(false)
   }, [pokemonToGuess]);
 
   /**
    * Renders the Pokémon image with animation
    */
   const renderPokemonImage = (isSoundGuess: boolean) => {
-    if ((!isSoundGuess || (isSoundGuess && hasGuessed)) && pokemonToGuess) {
+    if ((!isSoundGuess && !isPokedexNum || (isSoundGuess && hasGuessed)) && pokemonToGuess) {
       return (
         <Animated.View 
           style={[
@@ -303,6 +314,7 @@ const HomeScreen = () => {
         handleGameOver();
       }, 1200);
     }
+
   };
 
   /**
@@ -311,9 +323,13 @@ const HomeScreen = () => {
   const renderGameInterface = () => {
     if(pokemons.length >= 4){
       const mainType = pokemonToGuess?.types?.[0]?.type?.name || 'normal';
-      const backgroundColor = COLORS.types[mainType as keyof typeof COLORS.types];
-      const randomNum = Math.floor(Math.random() * 10);
-      const isSoundGuess = streak >= 5 && randomNum >= 4 && randomNum <= 6;
+      var backgroundColor = COLORS.types[mainType as keyof typeof COLORS.types];
+
+      if(isSoundGuess || isPokedexNum) {
+        backgroundColor = 'rgba(33, 32, 32, 0.8)'
+      }
+
+      console.log(`has cry been played: ${isCryPlayed}`)
 
       return (
         <View style={styles.gameContainer}>
@@ -324,27 +340,40 @@ const HomeScreen = () => {
               resizeMode="contain"
             />
             <View style={styles.pokemonInfo}>
-              <Text style={styles.pokemonNumber}>
-                #{pokemonToGuess?.id.toString().padStart(3, '0')}
-              </Text>
-              <View style={styles.typeContainer}>
-                {pokemonToGuess?.types?.map((type) => (
-                  <View
-                    key={type.type.name}
-                    style={[styles.typeTag, { backgroundColor: 'rgba(255,255,255,0.2)' }]}
-                  >
-                    <Text style={styles.typeText}>{type.type.name}</Text>
+              {!isSoundGuess && !isPokedexNum && (
+                <View style={styles.pokemonInfo}> 
+                  <Text style={styles.pokemonNumber}>
+                  #{pokemonToGuess?.id.toString().padStart(3, '0')}
+                </Text>
+                  <View style={styles.typeContainer}>
+                    {pokemonToGuess?.types?.map((type) => (
+                      <View
+                        key={type.type.name}
+                        style={[styles.typeTag, { backgroundColor: 'rgba(255,255,255,0.2)' }]}
+                      >
+                        <Text style={styles.typeText}>{type.type.name}</Text>
+                      </View>
+                    ))}
                   </View>
-                ))}
-              </View>
-              {isSoundGuess && (
+                </View>
+                
+              )}
+              {isSoundGuess && !isPokedexNum && (
                 <View style={styles.soundButtonContainer}>
                   <TouchableOpacity 
                     style={styles.soundButton}
-                    onPress={() => playPokemonCry(pokemonToGuess?.cries?.latest)}
+                    onPress={() => {playPokemonCry(pokemonToGuess?.cries?.latest)}}
                   >
                     <Ionicons name="volume-high" size={40} color="white" />
                   </TouchableOpacity>
+                </View>
+              )}
+              {isPokedexNum && (
+                <View style={styles.soundButtonContainer}> 
+                  <Text style={styles.pokedexNum}>
+                    POKEDEX
+                  #{pokemonToGuess?.id.toString().padStart(3, '0')}
+                  </Text>
                 </View>
               )}
             </View>
@@ -371,12 +400,15 @@ const HomeScreen = () => {
    * Plays the Pokémon cry sound
    */
   const playPokemonCry = async (pokemonURL: string | undefined) => {
-    if (pokemonURL) {
+    console.log("BUTTON PRESSED")
+    console.log(pokemonURL)
+    if (pokemonURL && !isCryPlayed) {
       await Audio.Sound.createAsync(
         { uri: pokemonURL },
         { shouldPlay: true }
       );
     }
+    setCryPlayed(true);
   }
 
   /**
@@ -401,6 +433,8 @@ const HomeScreen = () => {
   const showAnswerIndicator = (isCorrect: boolean) => {
     setShowAnswer(isCorrect ? 'correct' : 'incorrect');
     statsColorAnim.setValue(0);
+
+    
     
     Animated.sequence([
       Animated.spring(statsColorAnim, {
@@ -420,6 +454,15 @@ const HomeScreen = () => {
       setShowAnswer(null);
     });
   };
+
+  
+  var backgroundColor = pokemonToGuess?.types?.[0]?.type?.name 
+  ? COLORS.types[pokemonToGuess.types[0].type.name as keyof typeof COLORS.types]
+  : COLORS.pokemon.blue 
+
+  if(isSoundGuess || isPokedexNum) {
+    backgroundColor = 'rgba(33, 32, 32, 0.8)'
+  }
 
   return (
     <View style={styles.container}>
@@ -477,9 +520,7 @@ const HomeScreen = () => {
         <TouchableOpacity
           style={[
             styles.authButton,
-            { backgroundColor: pokemonToGuess?.types?.[0]?.type?.name 
-              ? COLORS.types[pokemonToGuess.types[0].type.name as keyof typeof COLORS.types]
-              : COLORS.pokemon.blue }
+            { backgroundColor }
           ]}
           onPress={handleAuthAction}
         >
@@ -689,4 +730,14 @@ const styles = StyleSheet.create({
     transform: [{ scale: 2.2 }],
     zIndex: 0,
   } as ImageStyle,
+  pokedexNum: {
+    color: '#FFFFFF',
+    fontSize: 40,
+    fontWeight: '600',
+    textTransform: 'capitalize',
+    fontFamily: Platform.select({
+      ios: 'System',
+      android: 'Roboto'
+    }),
+  } as TextStyle,
 });
