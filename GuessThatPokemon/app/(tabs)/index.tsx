@@ -328,7 +328,7 @@ const HomeScreen = () => {
 
       return (
         <View style={styles.gameContainer}>
-          <View style={[styles.pokemonCard, { backgroundColor }]}>
+          <View style={[styles.pokemonCard]}>
             <Image 
               source={require('../../assets/images/pokemon_backdrop-removebg-preview.png')} 
               style={styles.backdropImage}
@@ -366,6 +366,7 @@ const HomeScreen = () => {
               {isPokedexNum && (
                 <View style={styles.soundButtonContainer}> 
                   <Text style={styles.pokedexNum}>
+                    POKEDEX
                   #{pokemonToGuess?.id.toString().padStart(3, '0')}
                   </Text>
                 </View>
@@ -380,7 +381,7 @@ const HomeScreen = () => {
                 title={pokemon.name}
                 onPress={() => handlePokemonSelect(pokemon)}
                 animationDelay={200 + (index * 100)}
-                backgroundColor={backgroundColor}
+                backgroundColor={'rgba(255,255,255,0.2)'}
               />
             ))}
           </View>
@@ -505,9 +506,10 @@ const HomeScreen = () => {
         <TouchableOpacity
           style={[
             styles.authButton,
-            { backgroundColor: pokemonToGuess?.types?.[0]?.type?.name 
-              ? COLORS.types[pokemonToGuess.types[0].type.name as keyof typeof COLORS.types]
-              : COLORS.pokemon.blue }
+            { backgroundColor: 'rgba(183, 150, 83, 0.58)' }
+              // { backgroundColor: pokemonToGuess?.types?.[0]?.type?.name 
+              //   ? COLORS.types[pokemonToGuess.types[0].type.name as keyof typeof COLORS.types]
+              //   : COLORS.pokemon.blue }
           ]}
           onPress={handleAuthAction}
         >
@@ -610,6 +612,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     minHeight: 200,
     overflow: 'hidden',
+    backgroundColor: 'rgba(72, 60, 60, 0.58)'
   } as ViewStyle,
   pokemonInfo: {
     flex: 1,
