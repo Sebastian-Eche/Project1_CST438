@@ -244,10 +244,10 @@ const HomeScreen = () => {
       animateNewPokemon();
     }
     const randomNum = Math.floor(Math.random() * 10);
-    const isPokemonCry = streak >= 5 && streak < 10 && randomNum >= 4 && randomNum <= 6 || streak >= 10 && randomNum >= 3 && randomNum <= 7;
+    const isPokemonCry = streak >= 5 && streak < 10 && randomNum >= 4 && randomNum <= 6 || streak >= 10 && randomNum >= 2 && randomNum <= 6;
     setSoundGuess(isPokemonCry)
 
-    const isPokedex = streak >= 10 && randomNum > 7;
+    const isPokedex = streak >= 10 && randomNum >= 7;
     setPokedexNum(isPokedex)
 
     setCryPlayed(false)
@@ -323,12 +323,17 @@ const HomeScreen = () => {
   const renderGameInterface = () => {
     if(pokemons.length >= 4){
       const mainType = pokemonToGuess?.types?.[0]?.type?.name || 'normal';
-      const backgroundColor = COLORS.types[mainType as keyof typeof COLORS.types];
-      console.log(isCryPlayed)
+      var backgroundColor = COLORS.types[mainType as keyof typeof COLORS.types];
+
+      if(isSoundGuess || isPokedexNum) {
+        backgroundColor = 'rgba(33, 32, 32, 0.8)'
+      }
+
+      console.log(`has cry been played: ${isCryPlayed}`)
 
       return (
         <View style={styles.gameContainer}>
-          <View style={[styles.pokemonCard]}>
+          <View style={[styles.pokemonCard, { backgroundColor }]}>
             <Image 
               source={require('../../assets/images/pokemon_backdrop-removebg-preview.png')} 
               style={styles.backdropImage}
@@ -381,7 +386,7 @@ const HomeScreen = () => {
                 title={pokemon.name}
                 onPress={() => handlePokemonSelect(pokemon)}
                 animationDelay={200 + (index * 100)}
-                backgroundColor={'rgba(255,255,255,0.2)'}
+                backgroundColor={backgroundColor}
               />
             ))}
           </View>
@@ -450,6 +455,15 @@ const HomeScreen = () => {
     });
   };
 
+  
+  var backgroundColor = pokemonToGuess?.types?.[0]?.type?.name 
+  ? COLORS.types[pokemonToGuess.types[0].type.name as keyof typeof COLORS.types]
+  : COLORS.pokemon.blue 
+
+  if(isSoundGuess || isPokedexNum) {
+    backgroundColor = 'rgba(33, 32, 32, 0.8)'
+  }
+
   return (
     <View style={styles.container}>
       <Animated.View 
@@ -506,10 +520,7 @@ const HomeScreen = () => {
         <TouchableOpacity
           style={[
             styles.authButton,
-            { backgroundColor: 'rgba(183, 150, 83, 0.58)' }
-              // { backgroundColor: pokemonToGuess?.types?.[0]?.type?.name 
-              //   ? COLORS.types[pokemonToGuess.types[0].type.name as keyof typeof COLORS.types]
-              //   : COLORS.pokemon.blue }
+            { backgroundColor }
           ]}
           onPress={handleAuthAction}
         >
@@ -612,7 +623,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     minHeight: 200,
     overflow: 'hidden',
-    backgroundColor: 'rgba(72, 60, 60, 0.58)'
   } as ViewStyle,
   pokemonInfo: {
     flex: 1,
