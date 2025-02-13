@@ -1,9 +1,3 @@
-
-
-
-
-
-
 # Guess That Pokémon!
 
 A fun and interactive Pokémon guessing game built with React Native and Expo. Test your Pokémon knowledge by trying to identify Pokémon from their silhouettes!
