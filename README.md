@@ -1,60 +1,74 @@
+## Overview
+This is a sports betting assitant that makes use of an API we found [here](https://github.com/public-apis/public-apis?tab=readme-ov-file).
+
+We got styling help for this document from [this guide](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+
+## Introduction
+
+* How was communication managed
+* How many stories/issues were initially considered
+* How many stories/issues were completed
+
+## Team Retrospective
+
+### Team Member name
+
+- [a link to your pull requests]()
+- [a link to your issues]()
+
+#### What was your role / which stories did you work on
+
++ What was the biggest challenge? 
++ Why was it a challenge?
+  + How was the challenge addressed?
++ Favorite / most interesting part of this project
++ If you could do it over, what would you change?
++ What is the most valuable thing you learned?
+
+### Sebastian Echeverria
+1. Carol's pull requests are [here](https://github.com/Jonathan-Welham/Bits-Bots/pulls/@CarolDanvers)
+1. Carol's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
+
+#### What was your role / which stories did you work on
+Carol mostly worked on getting the app to run faster, better, and higher.  She did the best work possible but her contributions were overpowered and not well received by the fans.
+
++ What was the biggest challenge? 
+  + Managing pull requests and merges
++ Why was it a challenge?
+  + We were all new to git/github and not everyone followed convention
+  + How was the challenge addressed?
+  + I went to the TA for help and used ChatGPT and web resources to get more comfortable with git.
++ Favorite / most interesting part of this project
+  + Finally getting the IDs from the API calls to store in the ROOM database
++ If you could do it over, what would you change?
+  + I would get the ROOM database setup FIRST
++ What is the most valuable thing you learned?
+  + Do the work early and document EVERYTHING
+ 
+### Hani
+1. Carol's pull requests are [here](https://github.com/Jonathan-Welham/Bits-Bots/pulls/@CarolDanvers)
+1. Carol's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
+
+#### What was your role / which stories did you work on
+Carol mostly worked on getting the app to run faster, better, and higher.  She did the best work possible but her contributions were overpowered and not well received by the fans.
+
++ What was the biggest challenge? 
+  + Managing pull requests and merges
++ Why was it a challenge?
+  + We were all new to git/github and not everyone followed convention
+  + How was the challenge addressed?
+  + I went to the TA for help and used ChatGPT and web resources to get more comfortable with git.
++ Favorite / most interesting part of this project
+  + Finally getting the IDs from the API calls to store in the ROOM database
++ If you could do it over, what would you change?
+  + I would get the ROOM database setup FIRST
++ What is the most valuable thing you learned?
+  + Do the work early and document EVERYTHING
 
 
+## Conclusion
 
-
-
-
-# Guess That Pokémon!
-
-A fun and interactive Pokémon guessing game built with React Native and Expo. Test your Pokémon knowledge by trying to identify Pokémon from their silhouettes!
-
-## Features
-
-- Engaging Pokémon guessing gameplay
-- Beautiful Pokédex-style detail views for each Pokémon
-- Information about Pokémon types, abilities, and stats
-- Evolution chain visualization
-- Favorites system using SQLite database for persistent storage
-- Clean and modern UI inspired by the official Pokédex
-
-## Technical Stack
-
-- React Native
-- Expo Router for navigation
-- SQLite database for local data storage
-- PokeAPI for Pokémon data
-- TypeScript for type safety
-- Modern styling with React Native StyleSheet
-
-## Getting Started
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npx expo start
-   ```
-4. Use the Expo Go app on your mobile device or an emulator to run the application
-
-## How to Play
-
-1. Launch the app and you'll be presented with a Pokémon silhouette
-2. Try to guess the Pokémon's name
-3. Get feedback on your guess
-4. View detailed information about each Pokémon in the Pokédex view
-5. Save your favorite Pokémon to revisit them later
-
-## Data Source
-
-This app uses the [PokeAPI](https://pokeapi.co/) to fetch Pokémon data, including:
-- Pokémon information and stats
-- Evolution chains
-- Abilities and moves
-- Type information
-
-## Contributing
-
-Feel free to contribute to this project by submitting issues or pull requests. All contributions are welcome!
+- How successful was the project?
+  - Think in terms of what did you set out to do and what actually got done?
+- What was the largest victory?
+- Final assessment of the project
