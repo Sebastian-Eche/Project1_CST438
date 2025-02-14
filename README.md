@@ -11,20 +11,6 @@ We got styling help for this document from [this guide](https://docs.github.com/
 
 ## Team Retrospective
 
-### Team Member name
-
-- [a link to your pull requests]()
-- [a link to your issues]()
-
-#### What was your role / which stories did you work on
-
-+ What was the biggest challenge? 
-+ Why was it a challenge?
-  + How was the challenge addressed?
-+ Favorite / most interesting part of this project
-+ If you could do it over, what would you change?
-+ What is the most valuable thing you learned?
-
 ### Sebastian Echeverria
 1. Carol's pull requests are [here](https://github.com/Jonathan-Welham/Bits-Bots/pulls/@CarolDanvers)
 1. Carol's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
