@@ -58,8 +58,11 @@ Carol mostly worked on getting the app to run faster, better, and higher.  She d
 ## Conclusion
 
 - How successful was the project?
-  - Think in terms of what did you set out to do and what actually got done?
+  -The project was a success we set out to at least do the minimum requirements for this project because we were a group of two but we ended up doing a lot more, especially with styling, the favorites page, and the game loop.
 - What was the largest victory?
+ - Our largest victory would be getting our Github to work by being able to merge our branches to Main because that was an issue we struggled with at the very beginning of the project. Without fixing that early on I don’t know if we would have a complete project as we do now.
 - Final assessment of the project
+ - All in all, this project was fun to work on, trying to learn how to maneuver around React Native was challenging but doable. Making our guessing game was a fun way to learn a new framework.
+
 
 
