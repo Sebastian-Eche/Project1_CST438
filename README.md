@@ -25,7 +25,7 @@ My main focus of the project was working on the Game Loop. I added various ways 
   +  My biggest challenge was setting up the button to play the Pokemon’s cry audio file. 
 + Why was it a challenge?
   + The package I was using originally didn’t want to work even though I had correctly set up the function to play the audio according to their documentation (which was kind of lacking substance) No matter what changes I did the audio would get played and I was stuck for hours trying to solve the problem
-  + How was the challenge addressed?
++ How was the challenge addressed?
   + I used online sources such as Stackoverflow and ChatGPT to find a new package to use to play audio and I stumbled upon expo-av working with that I solved the issue in 5 minutes
 + Favorite / most interesting part of this project
   +  Working on the actual game loop of our app, adding the button to make the player guess the Pokemon based on their cry gave it enough pizzazz to make it feel more gamified. With that, adding the Pokedex number and choosing to either show the image, cry, or number randomly and related to the streak. Another change that I came up with later was removing the styling corresponding to the Pokemon’s type when the player had to guess the Pokemon based on the cry or number. I added where the cry can only be played once.
@@ -45,7 +45,7 @@ My main focus was on implementing the database functionality and user authentica
   + Learning how to use the lightsql for database, and learning about branches and pull requests.
 + Why was it a challenge?
   + New to git/github and for database i have mostly used firebase or supabase so lightsql was new to me.
-  + How was the challenge addressed?
++ How was the challenge addressed?
   + asked online resources and researched for help.
 + Favorite / most interesting part of this project
   + My favorite part was the login/signup system and the favorites page.
