@@ -34,35 +34,35 @@ My main focus of the project was working on the Game Loop. I added various ways 
 + What is the most valuable thing you learned?
   + I need to better document my code especially when others are using it
  
-### Hani
-1. Carol's pull requests are [here](https://github.com/Jonathan-Welham/Bits-Bots/pulls/@CarolDanvers)
-1. Carol's Github issues are [here](https://github.com/FedericoRubino/cst438_project2/issues/created_by/@FedericoRubino)
+### Hani Al barkawi
+1. Carol's pull requests are [https://github.com/pulls?q=is%3Apr+author%3Athe2stura+is%3Apublic]
+1. Carol's Github issues are [https://github.com/Sebastian-Eche/Project1_CST438/issues?q=is%3Aissue%20state%3Aclosed%20author%3Athe2stura]
 
 #### What was your role / which stories did you work on
-Carol mostly worked on getting the app to run faster, better, and higher.  She did the best work possible but her contributions were overpowered and not well received by the fans.
+My main focus was on implementing the database functionality and user authentication features. I worked on setting up the database, creating the login/signup system, and implementing the favorites feature that allows users to save their favorite Pokemon.
 
 + What was the biggest challenge? 
-  + Managing pull requests and merges
+  + learning how to use the lightsql for database, and learning about branches and pull requests.
 + Why was it a challenge?
-  + We were all new to git/github and not everyone followed convention
+  + new to git/github and for database i have mostly used firebase or supabase so lightsql was new to me.
   + How was the challenge addressed?
-  + I went to the TA for help and used ChatGPT and web resources to get more comfortable with git.
+  + asked online resources and researched for help.
 + Favorite / most interesting part of this project
-  + Finally getting the IDs from the API calls to store in the ROOM database
+  + my favorite part was the login/signup system and the favorites page.
 + If you could do it over, what would you change?
-  + I would get the ROOM database setup FIRST
+  + i would have liked to have the database working from the start, so we can focus on the game loop and styling.
 + What is the most valuable thing you learned?
-  + Do the work early and document EVERYTHING
+  + having partners on the same page is key to success.
 
 
 ## Conclusion
 
 - How successful was the project?
-  - The project was a success we set out to at least do the minimum requirements for this project because we were a group of two but we ended up doing a lot more, especially with styling, the favorites page, and the game loop.
+  - we were able to get the database working and the login/signup system and api integration working.
 - What was the largest victory?
-  - Our largest victory would be getting our Github to work by being able to merge our branches to Main because that was an issue we struggled with at the very beginning of the project. Without fixing that early on I don’t know if we would have a complete project as we do now.
+  - in my opinion the largest victory was getting the database working and the login/signup system.
 - Final assessment of the project
-  - All in all, this project was fun to work on, trying to learn how to maneuver around React Native was challenging but doable. Making our guessing game was a fun way to learn a new framework. I (Sebastian) always have an enjoyment of turning any project I work on in class into a game and this project was no exception. I enjoyed thinking of new ways to make the player guess the Pokemon in a way that is challenging and fun to play for Pokemon fans. 
+  - the project set out to do was to create a guessing game app that is fun and engaging for Pokemon fans. We were able to get the database working and the login/signup system.
 
 
 
