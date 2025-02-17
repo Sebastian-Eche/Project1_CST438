@@ -1,54 +1,65 @@
-# Guess That Pokémon!
+## Overview
+Guess That Pokemon is a guessing game app that makes the player guess between the Pokemon’s image, cry,  or Pokedex number using the PokeAPI [here](https://pokeapi.co/).
 
-A fun and interactive Pokémon guessing game built with React Native and Expo. Test your Pokémon knowledge by trying to identify Pokémon from their silhouettes!
+We got styling help for this document from [this guide](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 
-## Features
+## Introduction
 
-- Engaging Pokémon guessing gameplay
-- Beautiful Pokédex-style detail views for each Pokémon
-- Information about Pokémon types, abilities, and stats
-- Evolution chain visualization
-- Favorites system using SQLite database for persistent storage
-- Clean and modern UI inspired by the official Pokédex
+* How was communication managed
+  + Communication was managed through Slack and In-Person meetings. If we had trouble or submitted a pull request we would communicate through Slack either by messaging or using their huddle feature. 
+* How many stories/issues were initially considered
+  + In the very beginning we had less than 10 issues we wanted which were the main things such as have a database, sign up page, and API and other issues that go along with it. As we continued to work more issues presented themselves and currently, we have 17 issues created (15 closed and 2 open)
+* How many stories/issues were completed
+  + 15 issues were completed while 2 remain open
 
-## Technical Stack
+## Team Retrospective
 
-- React Native
-- Expo Router for navigation
-- SQLite database for local data storage
-- PokeAPI for Pokémon data
-- TypeScript for type safety
-- Modern styling with React Native StyleSheet
+### Sebastian Echeverria
+1. Sebastian’s pull requests are [here](https://github.com/Sebastian-Eche/Project1_CST438/issues?q=state%3Aclosed%20is%3Apr%20author%3ASebastian-Eche%20)
+1. Sebastian’s Github issues are [here](https://github.com/Sebastian-Eche/Project1_CST438/issues?q=is%3Aissue%20state%3Aclosed%20author%3ASebastian-Eche)
 
-## Getting Started
+#### What was your role / which stories did you work on
+My main focus of the project was working on the Game Loop. I added various ways that a Player can guess a Pokemon this being by its image, cry, or pokedex number to give it more substance than just an image to guess and to make it more challenging. I also worked on the API setup, creating the Unit Tests to test our API calls and general bug fixes.
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npx expo start
-   ```
-4. Use the Expo Go app on your mobile device or an emulator to run the application
++ What was the biggest challenge? 
+  +  My biggest challenge was setting up the button to play the Pokemon’s cry audio file. 
++ Why was it a challenge?
+  + The package I was using originally didn’t want to work even though I had correctly set up the function to play the audio according to their documentation (which was kind of lacking substance) No matter what changes I did the audio would get played and I was stuck for hours trying to solve the problem
+  + How was the challenge addressed?
+  + I used online sources such as Stackoverflow and ChatGPT to find a new package to use to play audio and I stumbled upon expo-av working with that I solved the issue in 5 minutes
++ Favorite / most interesting part of this project
+  +  Working on the actual game loop of our app, adding the button to make the player guess the Pokemon based on their cry gave it enough pizzazz to make it feel more gamified. With that, adding the Pokedex number and choosing to either show the image, cry, or number randomly and related to the streak. Another change that I came up with later was removing the styling corresponding to the Pokemon’s type when the player had to guess the Pokemon based on the cry or number. I added where the cry can only be played once.
++ If you could do it over, what would you change?
+  + Not trying to fix the Web application to work I spent a whole weekend trying to fix it and I never could. I could’ve used that time to add more interesting features to enhance the gameplay.
++ What is the most valuable thing you learned?
+  + I need to better document my code especially when others are using it
+ 
+### Hani Al barkawi
+1. Carol's pull requests are [https://github.com/pulls?q=is%3Apr+author%3Athe2stura+is%3Apublic]
+1. Carol's Github issues are [https://github.com/Sebastian-Eche/Project1_CST438/issues?q=is%3Aissue%20state%3Aclosed%20author%3Athe2stura]
 
-## How to Play
+#### What was your role / which stories did you work on
+My main focus was on implementing the database functionality and user authentication features. I worked on setting up the database, creating the login/signup system, and implementing the favorites feature that allows users to save their favorite Pokemon.
 
-1. Launch the app and you'll be presented with a Pokémon silhouette
-2. Try to guess the Pokémon's name
-3. Get feedback on your guess
-4. View detailed information about each Pokémon in the Pokédex view
-5. Save your favorite Pokémon to revisit them later
++ What was the biggest challenge? 
+  + learning how to use the lightsql for database, and learning about branches and pull requests.
++ Why was it a challenge?
+  + new to git/github and for database i have mostly used firebase or supabase so lightsql was new to me.
+  + How was the challenge addressed?
+  + asked online resources and researched for help.
++ Favorite / most interesting part of this project
+  + my favorite part was the login/signup system and the favorites page.
++ If you could do it over, what would you change?
+  + i would have liked to have the database working from the start, so we can focus on the game loop and styling.
++ What is the most valuable thing you learned?
+  + having partners on the same page is key to success.
 
-## Data Source
 
-This app uses the [PokeAPI](https://pokeapi.co/) to fetch Pokémon data, including:
-- Pokémon information and stats
-- Evolution chains
-- Abilities and moves
-- Type information
+## Conclusion
 
-## Contributing
-
-Feel free to contribute to this project by submitting issues or pull requests. All contributions are welcome!
+- How successful was the project?
+  - we were able to get the database working and the login/signup system and api integration working.
+- What was the largest victory?
+  - in my opinion the largest victory was getting the database working and the login/signup system.
+- Final assessment of the project
+  - the project set out to do was to create a guessing game app that is fun and engaging for Pokemon fans. We were able to get the database working and the login/signup system.
