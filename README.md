@@ -34,32 +34,32 @@ My main focus of the project was working on the Game Loop. I added various ways 
 + What is the most valuable thing you learned?
   + I need to better document my code especially when others are using it
  
-### Hani Al barkawi
-1. hani's pull requests are [here](https://github.com/pulls?q=is%3Apr+author%3Athe2stura+is%3Apublic)
-1. hani's Github issues are [here](https://github.com/Sebastian-Eche/Project1_CST438/issues?q=is%3Aissue%20state%3Aclosed%20author%3Athe2stura)
+### Hani Al Barkawi
+1. Hani's pull requests are [here](https://github.com/pulls?q=is%3Apr+author%3Athe2stura+is%3Apublic)
+1. Hani's Github issues are [here](https://github.com/Sebastian-Eche/Project1_CST438/issues?q=is%3Aissue%20state%3Aclosed%20author%3Athe2stura)
 
 #### What was your role / which stories did you work on
 My main focus was on implementing the database functionality and user authentication features. I worked on setting up the database, creating the login/signup system, and implementing the favorites feature that allows users to save their favorite Pokemon.
 
 + What was the biggest challenge? 
-  + learning how to use the lightsql for database, and learning about branches and pull requests.
+  + Learning how to use the lightsql for database, and learning about branches and pull requests.
 + Why was it a challenge?
-  + new to git/github and for database i have mostly used firebase or supabase so lightsql was new to me.
+  + New to git/github and for database i have mostly used firebase or supabase so lightsql was new to me.
   + How was the challenge addressed?
   + asked online resources and researched for help.
 + Favorite / most interesting part of this project
-  + my favorite part was the login/signup system and the favorites page.
+  + My favorite part was the login/signup system and the favorites page.
 + If you could do it over, what would you change?
-  + i would have liked to have the database working from the start, so we can focus on the game loop and styling.
+  + I would have liked to have the database working from the start, so we can focus on the game loop and styling.
 + What is the most valuable thing you learned?
-  + having partners on the same page is key to success.
+  + Having partners on the same page is key to success.
 
 
 ## Conclusion
 
 - How successful was the project?
-  - we were able to get the database working and the login/signup system and api integration working.
+  - The project was a success we set out to at least do the minimum requirements for this project because we were a group of two but we ended up doing a lot more, especially with styling, the favorites page, and the game loop. We got the database working and the login/signup system and API integration working.
 - What was the largest victory?
-  - in my opinion the largest victory was getting the database working and the login/signup system.
+  -  Our largest victory in general would be getting our Github to work by being able to merge our branches to Main because that was an issue we struggled with at the very beginning of the project. Without fixing that early on I don’t know if we would have a complete project as we do now. For the project, our largest victory would be getting the database working and the login/signup system
 - Final assessment of the project
-  - the project set out to do was to create a guessing game app that is fun and engaging for Pokemon fans. We were able to get the database working and the login/signup system.
+  - All in all, this project was fun to work on, trying to learn how to maneuver around React Native was challenging but doable. Making our guessing game was a fun way to learn a new framework. I (Sebastian) always have an enjoyment of turning any project I work on in class into a game and this project was no exception. We enjoyed thinking of new ways to make the player guess the Pokemon in a way that is challenging and fun and engaging to play for Pokemon fans.
