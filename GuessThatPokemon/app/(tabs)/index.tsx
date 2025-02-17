@@ -328,9 +328,6 @@ const HomeScreen = () => {
       if(isSoundGuess || isPokedexNum) {
         backgroundColor = 'rgba(33, 32, 32, 0.8)'
       }
-
-      console.log(`has cry been played: ${isCryPlayed}`)
-
       return (
         <View style={styles.gameContainer}>
           <View style={[styles.pokemonCard, { backgroundColor }]}>
@@ -400,8 +397,6 @@ const HomeScreen = () => {
    * Plays the Pokémon cry sound
    */
   const playPokemonCry = async (pokemonURL: string | undefined) => {
-    console.log("BUTTON PRESSED")
-    console.log(pokemonURL)
     if (pokemonURL && !isCryPlayed) {
       await Audio.Sound.createAsync(
         { uri: pokemonURL },

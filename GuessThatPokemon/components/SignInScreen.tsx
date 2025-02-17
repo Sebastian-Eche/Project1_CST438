@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, Platform } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Platform, Image } from 'react-native';
 import { signInUser } from '../database/db';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { COLORS, FONTS, SPACING } from '@/constants/Theme';
+import { BlurView } from 'expo-blur';
 
 const SignInScreen = () => {
   const [username, setUsername] = useState('');
@@ -21,77 +22,54 @@ const SignInScreen = () => {
     if (result.success && result.userId) {
       await AsyncStorage.setItem('username', username);
       await AsyncStorage.setItem('userId', result.userId.toString());
-      router.replace('/(tabs)');
+      router.push('/(tabs)');
     } else {
       setMessage('Invalid username or password');
     }
   };
 
   const goToSignUp = () => {
-    router.replace('/(auth)/sign-up');
+    router.push('/(auth)/sign-up');
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Image 
-          source={require('../assets/images/pokemon_backdrop-removebg-preview.png')} 
-          style={styles.backdropImage}
-          resizeMode="contain"
-        />
-        <View style={styles.titleContainer}>
-          <Text style={[styles.titlePart, { color: '#000000' }]}>
-            Guess
-          </Text>
-          <Text style={[styles.titlePart, { color: '#000000' }]}>
-            {' That '}
-          </Text>
-          <Text style={[styles.titlePart, { color: '#000000' }]}>
-            Pokémon
-          </Text>
-        </View>
-      </View>
+      <BlurView intensity={30} tint="light" style={styles.card}>
+        <View style={styles.cardContent}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.title}>Hello!</Text>
+            <Text style={styles.subtitle}>We are really happy to see you again!</Text>
+          </View>
 
-      <View style={styles.formContainer}>
-        <View style={styles.inputWrapper}>
-          <View style={styles.inputShadow} />
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor={COLORS.dark.textSecondary}
-            value={username}
-            onChangeText={setUsername}
-          />
-        </View>
+          <View style={styles.formContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor="rgba(0, 0, 0, 0.5)"
+              value={username}
+              onChangeText={setUsername}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="rgba(0, 0, 0, 0.5)"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
 
-        <View style={styles.inputWrapper}>
-          <View style={styles.inputShadow} />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor={COLORS.dark.textSecondary}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-        </View>
+            <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
+              <Text style={styles.buttonText}>Sign in</Text>
+            </TouchableOpacity>
 
-        <View style={styles.buttonWrapper}>
-          <View style={[styles.buttonShadow, { backgroundColor: COLORS.pokemon.darkBlue }]} />
-          <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
-            <Text style={styles.buttonText}>SIGN IN</Text>
-          </TouchableOpacity>
-        </View>
+            {message ? <Text style={styles.message}>{message}</Text> : null}
 
-        {message ? <Text style={styles.message}>{message}</Text> : null}
-
-        <View style={styles.buttonWrapper}>
-          <View style={[styles.buttonShadow, { backgroundColor: '#666666' }]} />
-          <TouchableOpacity style={styles.linkButton} onPress={goToSignUp}>
-            <Text style={styles.linkText}>New to the game? Create Account</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={goToSignUp}>
+              <Text style={styles.linkText}>Don't have an account? Create one</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </BlurView>
     </View>
   );
 };
@@ -99,108 +77,65 @@ const SignInScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.dark.background,
-  },
-  header: {
-    height: 200,
-    backgroundColor: '#8B0000',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    position: 'relative',
+    padding: SPACING.xl,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 400,
+    borderRadius: 25,
     overflow: 'hidden',
-  },
-  backdropImage: {
-    position: 'absolute',
-    width: '140%',
-    height: '140%',
-    opacity: 0.1,
-    transform: [{ scale: 2.2 }],
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 30,
-  },
-  titlePart: {
-    fontSize: FONTS.size.xxl,
-    fontWeight: FONTS.weight.bold,
-    color: '#000000',
-    textShadowColor: 'rgba(0, 0, 0, 0.4)',
-    textShadowOffset: { width: 4, height: 4 },
-    textShadowRadius: 0,
-    letterSpacing: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     ...Platform.select({
       ios: {
-        textShadowColor: 'rgba(0, 0, 0, 0.4)',
-        textShadowOffset: { width: 4, height: 4 },
-        textShadowRadius: 0,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
       },
       android: {
-        elevation: 8,
-        textShadowColor: 'rgba(0, 0, 0, 0.4)',
-        textShadowOffset: { width: 4, height: 4 },
-        textShadowRadius: 0,
+        elevation: 5,
       },
     }),
   },
-  formContainer: {
+  cardContent: {
     padding: SPACING.xl,
+  },
+  headerContainer: {
+    marginBottom: 32,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#000000',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666666',
+    lineHeight: 24,
+  },
+  formContainer: {
     gap: SPACING.md,
-  },
-  inputWrapper: {
-    position: 'relative',
-    marginBottom: SPACING.md,
-  },
-  inputShadow: {
-    position: 'absolute',
-    top: 3,
-    left: 3,
-    right: -3,
-    bottom: -3,
-    backgroundColor: '#CCCCCC',
-    borderRadius: 12,
-    zIndex: 1,
   },
   input: {
     height: 50,
-    backgroundColor: COLORS.dark.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 12,
     paddingHorizontal: SPACING.md,
-    color: COLORS.dark.text,
+    color: '#000000',
     fontSize: FONTS.size.md,
-    position: 'relative',
-    zIndex: 2,
-  },
-  buttonWrapper: {
-    position: 'relative',
-    marginVertical: SPACING.sm,
-  },
-  buttonShadow: {
-    position: 'absolute',
-    top: 3,
-    left: 3,
-    right: -3,
-    bottom: -3,
-    borderRadius: 12,
-    zIndex: 1,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   signInButton: {
     backgroundColor: '#8B0000',
-    padding: SPACING.md,
+    height: 50,
     borderRadius: 12,
     alignItems: 'center',
-    position: 'relative',
-    zIndex: 2,
-  },
-  linkButton: {
-    backgroundColor: '#888888',
-    padding: SPACING.md,
-    borderRadius: 12,
-    alignItems: 'center',
-    position: 'relative',
-    zIndex: 2,
+    justifyContent: 'center',
+    marginTop: 8,
   },
   buttonText: {
     color: '#FFFFFF',
@@ -208,15 +143,17 @@ const styles = StyleSheet.create({
     fontWeight: FONTS.weight.bold,
   },
   linkText: {
-    color: '#FFFFFF',
+    color: '#666666',
     fontSize: FONTS.size.md,
-    fontWeight: FONTS.weight.medium,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+    marginTop: 16,
   },
   message: {
-    marginTop: SPACING.md,
     textAlign: 'center',
     color: COLORS.error,
     fontSize: FONTS.size.md,
+    marginTop: 8,
   }
 });
 
