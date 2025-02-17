@@ -8,9 +8,9 @@ We got styling help for this document from [this guide](https://docs.github.com/
 * How was communication managed
   + Communication was managed through Slack and In-Person meetings. If we had trouble or submitted a pull request we would communicate through Slack either by messaging or using their huddle feature. 
 * How many stories/issues were initially considered
-  + In the very beginning we had less than 10 issues we wanted which were the main things such as have a database, sign up page, and API and other issues that go along with it. As we continued to work more issues presented themselves and currently, we have 17 issues created (15 closed and 2 open)
+  + In the very beginning we had less than 10 issues we wanted which were the main things such as have a database, sign up page, and API and other issues that go along with it. As we continued to work more issues presented themselves and currently, we have 18 issues created (16 closed and 2 open)
 * How many stories/issues were completed
-  + 15 issues were completed while 2 remain open
+  + 16 issues were completed while 2 remain open
 
 ## Team Retrospective
 
