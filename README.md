@@ -1,7 +1,7 @@
 ## Overview
 Guess That Pokemon is a guessing game app that makes the player guess between the Pokemon’s image, cry,  or Pokedex number using the PokeAPI [here](https://pokeapi.co/).
 
-We got styling help for this document from [this guide](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+We got styling help from this article from [this guide](https://medium.com/@salihhugurr/writing-clean-code-in-react-native-a-comprehensive-guide-0a891ccc01ee)
 
 ## Introduction
 
