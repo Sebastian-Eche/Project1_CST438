@@ -62,7 +62,7 @@ My main focus was on implementing the database functionality and user authentica
 - What was the largest victory?
   - in my opinion the largest victory was getting the database working and the login/signup system.
 - Final assessment of the project
-  - the project set out to do was to create a guessing game app that is fun and engaging for Pokemon fans. We were able to get the database working and the login/signup system.
+  - the project set 
 
 
 
