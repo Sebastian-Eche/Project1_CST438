@@ -35,8 +35,8 @@ My main focus of the project was working on the Game Loop. I added various ways 
   + I need to better document my code especially when others are using it
  
 ### Hani Al barkawi
-1. hani's pull requests are [https://github.com/pulls?q=is%3Apr+author%3Athe2stura+is%3Apublic]
-1. hani's Github issues are [https://github.com/Sebastian-Eche/Project1_CST438/issues?q=is%3Aissue%20state%3Aclosed%20author%3Athe2stura]
+1. hani's pull requests are [here]https://github.com/pulls?q=is%3Apr+author%3Athe2stura+is%3Apublic
+1. hani's Github issues are [here]https://github.com/Sebastian-Eche/Project1_CST438/issues?q=is%3Aissue%20state%3Aclosed%20author%3Athe2stura
 
 #### What was your role / which stories did you work on
 My main focus was on implementing the database functionality and user authentication features. I worked on setting up the database, creating the login/signup system, and implementing the favorites feature that allows users to save their favorite Pokemon.
